@@ -1,14 +1,16 @@
-@Library('Shared') _
+@Library('Shared@main') _
 
 pipeline {
     agent any
     
     environment {
         // Update the main app image name to match the deployment file
-        DOCKER_IMAGE_NAME = 'trainwithshubham/easyshop-app'
-        DOCKER_MIGRATION_IMAGE_NAME = 'trainwithshubham/easyshop-migration'
+        DOCKER_IMAGE_NAME = 'arnab23/easyshop-app'
+        DOCKER_MIGRATION_IMAGE_NAME = 'arnab23/easyshop-migration'
         DOCKER_IMAGE_TAG = "${BUILD_NUMBER}"
+        DOCKER_CREDENTIALS = credentials('dockerhub-credentials')
         GITHUB_CREDENTIALS = credentials('github-credentials')
+        GIT_REPO = 'https://github.com/Arnab2239/arnab-e-commerce-app.git'
         GIT_BRANCH = "master"
     }
     
@@ -24,7 +26,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 script {
-                    clone("https://github.com/LondheShubham153/tws-e-commerce-app.git","master")
+                    clone(env.GIT_REPO,env.GIT_BRANCH)
                 }
             }
         }
@@ -86,7 +88,7 @@ pipeline {
                             docker_push(
                                 imageName: env.DOCKER_IMAGE_NAME,
                                 imageTag: env.DOCKER_IMAGE_TAG,
-                                credentials: 'docker-hub-credentials'
+                                credentials: 'dockerhub-credentials'
                             )
                         }
                     }
@@ -98,7 +100,7 @@ pipeline {
                             docker_push(
                                 imageName: env.DOCKER_MIGRATION_IMAGE_NAME,
                                 imageTag: env.DOCKER_IMAGE_TAG,
-                                credentials: 'docker-hub-credentials'
+                                credentials: 'dockerhub-credentials'
                             )
                         }
                     }
@@ -114,11 +116,14 @@ pipeline {
                         imageTag: env.DOCKER_IMAGE_TAG,
                         manifestsPath: 'kubernetes',
                         gitCredentials: 'github-credentials',
+
                         gitUserName: 'Jenkins CI',
-                        gitUserEmail: 'shubhamnath5@gmail.com'
+                        gitUserEmail: 'arnab2239@gmail.com'
                     )
                 }
             }
         }
     }
+
 }
+
