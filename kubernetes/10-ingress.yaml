@@ -10,10 +10,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - easyshop.52.51.91.36.nip.io
+    - easyshop.108.130.49.121.nip.io
     secretName: easyshop-tls-secret  # Cert-Manager will manage this
   rules:
-  - host: easyshop.letsdeployit.com
+  - host: easyshop.108.130.49.121.nip.io
     http:
       paths:
       - path: /
